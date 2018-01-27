@@ -1,1 +1,4 @@
 Pillow
+flask
+flask-restful
+flask-jsonpify

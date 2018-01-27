@@ -4,6 +4,10 @@ from PIL import Image
 import sys
 
 
+class BadImageSizeException(Exception):
+    status_code = 400
+    detail = 'Image size must be 512x512'
+
 def get_data(height, width, interval, datalen, start):
     # first line: 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0 ...
     data = []
@@ -64,9 +68,18 @@ def unmark(filename):
     im = im.convert("RGBA")
     kk = im.load()
     func = raw_data.get(im.size[0])
-    if not func:
-        print ("NOT SUPPORT SIZE (128, 256, 512)")
-        sys.exit()
+
+    width = im.size[0]
+    height = im.size[1]
+    print (width)
+    print (height)
+
+    if width != 512:
+        raise BadImageSizeException()
+
+    if height != 512:
+        raise BadImageSizeException()
+        # sys.exit()
 
     print ("SIZE: ", im.size)
     nodes = func()
@@ -90,8 +103,7 @@ def unmark(filename):
 
     new_name = filename.lower().replace(".png", ".new.png")
 
-    print ("NEW: ", new_name)
-    im.save(new_name, "PNG")
+    im.save(filename, "PNG")
 
 
 def show(x, n):
